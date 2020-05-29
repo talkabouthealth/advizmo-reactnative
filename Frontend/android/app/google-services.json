@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1079252210026",
+    "firebase_url": "https://advizmo-457da.firebaseio.com",
+    "project_id": "advizmo-457da",
+    "storage_bucket": "advizmo-457da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079252210026:android:680ed8bff0265572589513",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079252210026-sd8e1g7omr6mui5jgk7psnfeu7jnhm89.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx1A7aJqWK3a7qkQkB9hDSGz5pjJLhyWw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079252210026-sd8e1g7omr6mui5jgk7psnfeu7jnhm89.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079252210026:android:6f12d3d3dbba4f71589513",
+        "android_client_info": {
+          "package_name": "com.testapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1079252210026-sd8e1g7omr6mui5jgk7psnfeu7jnhm89.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCx1A7aJqWK3a7qkQkB9hDSGz5pjJLhyWw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1079252210026-sd8e1g7omr6mui5jgk7psnfeu7jnhm89.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
