@@ -1,6 +1,7 @@
 package com.globalsoft.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,24 +19,23 @@ import com.globalsoft.dao.UserItemMappingRepository;
 import com.globalsoft.dao.UserRepository;
 import com.globalsoft.dto.models.UserItemCompositeId;
 import com.globalsoft.dto.models.UserItemMapping;
+import com.globalsoft.generic.models.FetchCreatedItemRequest;
+import com.globalsoft.generic.models.FetchCreatedItemResponse;
 import com.globalsoft.generic.models.ItemCreationRequest;
 import com.globalsoft.generic.models.ItemCreationResponse;
 import com.globalsoft.services.HTTPClientService;
+import com.globalsoft.services.ItemService;
 import com.google.gson.Gson;
 
 @RestController
 public class ItemController {
 //	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private UserItemMappingRepository userItemMappingRepository;
 	@Autowired
-	HTTPClientService httpClientService;
+	private HTTPClientService httpClientService;
 	@Autowired
-	ItemCreationRequest itemCreationRequest1;
-	@Autowired
-	GenericConstants constants;
+	private ItemService itemService;
 
 	private static final Logger LOGGER = Logger.getLogger(ItemController.class.getName());
 
@@ -53,7 +53,7 @@ public class ItemController {
 //		List<UserItemMapping> list = userItemMappingRepository.findByUserItemCompositeId(new UserItemCompositeId("user_002", "item_00005"));
 //		List<UserItemMapping> list = userItemMappingRepository.findByUserItemCompositeId(new UserItemCompositeId("", "item_00005"));
 
-		Iterable<UserItemMapping> list = userItemMappingRepository.findByUserId("user_002");
+		Iterable<UserItemMapping> list = userItemMappingRepository.findByUserId("user_002", "ACTIVE");
 		List<UserItemMapping> list2 = userItemMappingRepository.findByUserItemCompositeIdUserId("user_002");
 
 		list.forEach(System.out::println);
@@ -94,7 +94,7 @@ public class ItemController {
 						new UserItemCompositeId("user_007_1", itemCreationResponse.getItemId()), null, null, null);
 				userItemMapping.setAccessToken(itemCreationResponse.getAccessToken());
 				userItemMapping.setRequestId(itemCreationResponse.getRequestId());
-				userItemMapping.setAccessTokenActiveStatus(constants.tokenActiveStatus.get("active"));
+				userItemMapping.setAccessTokenActiveStatus(GenericConstants.tokenActiveStatus.get("active"));
 				userItemMappingRepository.save(userItemMapping);
 
 			} else {
@@ -106,4 +106,11 @@ public class ItemController {
 		return "success";
 	}
 
+	@PostMapping("/accessAllItems")
+	public List<FetchCreatedItemResponse> accessAllItems(@RequestBody() FetchCreatedItemRequest fetchItemRequest) {
+		LOGGER.log(Level.INFO, "request received in /accessAllItems");
+		List<FetchCreatedItemResponse> listOfFetchedItems= itemService.fetchAllItemsForUser(fetchItemRequest);
+		LOGGER.log(Level.INFO, "returning response from /accessAllItems");
+		return listOfFetchedItems;
+	}
 }
