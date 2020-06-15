@@ -1,7 +1,6 @@
 package com.globalsoft.controllers;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,15 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.globalsoft.constants.GenericConstants;
 import com.globalsoft.constants.UrlConstants;
 import com.globalsoft.dao.UserItemMappingRepository;
-import com.globalsoft.dao.UserRepository;
 import com.globalsoft.dto.models.UserItemCompositeId;
 import com.globalsoft.dto.models.UserItemMapping;
+import com.globalsoft.generic.models.FetchCreatedItemAccountsSummaryRequest;
 import com.globalsoft.generic.models.FetchCreatedItemRequest;
 import com.globalsoft.generic.models.FetchCreatedItemResponse;
 import com.globalsoft.generic.models.ItemCreationRequest;
 import com.globalsoft.generic.models.ItemCreationResponse;
 import com.globalsoft.services.HTTPClientService;
 import com.globalsoft.services.ItemService;
+import com.globalsoft.ui.models.AccountsSummaryResponse;
 import com.google.gson.Gson;
 
 @RestController
@@ -109,8 +109,16 @@ public class ItemController {
 	@PostMapping("/accessAllItems")
 	public List<FetchCreatedItemResponse> accessAllItems(@RequestBody() FetchCreatedItemRequest fetchItemRequest) {
 		LOGGER.log(Level.INFO, "request received in /accessAllItems");
-		List<FetchCreatedItemResponse> listOfFetchedItems= itemService.fetchAllItemsForUser(fetchItemRequest);
+		List<FetchCreatedItemResponse> listOfFetchedItems = itemService.fetchAllItemsForUser(fetchItemRequest);
 		LOGGER.log(Level.INFO, "returning response from /accessAllItems");
 		return listOfFetchedItems;
+	}
+
+	@PostMapping("/accessAllAccountsSummary")
+	public AccountsSummaryResponse accessAllAccountsSummary( @RequestBody() FetchCreatedItemAccountsSummaryRequest fetchAccountsRequest) {
+		LOGGER.log(Level.INFO, "request received in /accessAllAccountsSummary");
+		AccountsSummaryResponse listOfFetchedAccounts = itemService.fetchAllAccountsSummaryForUser(fetchAccountsRequest);
+		LOGGER.log(Level.INFO, "returning response from /accessAllAccountsSummary");
+		return listOfFetchedAccounts;
 	}
 }

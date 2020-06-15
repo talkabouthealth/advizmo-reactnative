@@ -2,7 +2,11 @@ package com.globalsoft.services;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -15,10 +19,14 @@ import com.globalsoft.constants.GenericConstants;
 import com.globalsoft.constants.UrlConstants;
 import com.globalsoft.dao.UserItemMappingRepository;
 import com.globalsoft.dto.models.UserItemMapping;
+import com.globalsoft.generic.models.FetchCreatedItemAccountsResponse;
+import com.globalsoft.generic.models.FetchCreatedItemAccountsSummaryRequest;
 import com.globalsoft.generic.models.FetchCreatedItemRequest;
 import com.globalsoft.generic.models.FetchCreatedItemResponse;
 import com.globalsoft.generic.models.SearchInstitutionByIdRequest;
 import com.globalsoft.generic.models.SearchInstitutionByIdResponse;
+import com.globalsoft.ui.models.AccountsSummaryResponse;
+import com.globalsoft.ui.models.AccountsSummaryResponse.AccountWiseSummary;
 import com.google.gson.Gson;
 
 @Service
@@ -78,7 +86,68 @@ public class ItemService {
 			itemFetched.getItem().setInstitutionName(institutionName);
 		}
 		// step 3 implementation ends
+
+		// this will basically show the list of banks with whom the client has an
+		// account and has created item on our app via plaid
 		return listOfFetchedItems;
+	}
+
+	// Method to fetch all the accounts of a user and return the summary grouped by
+	// account types
+	public AccountsSummaryResponse fetchAllAccountsSummaryForUser(
+			FetchCreatedItemAccountsSummaryRequest fetchAccountsRequest) {
+		// 1. based on user id, fetch the access token for all the items of this user
+
+		// 2. loop to send out requests to plaid for all the access tokens fetched from
+		// db. Write a service method for this.
+
+		// 3. traverse all the accounts and aggregate them in a map based on their account types
+		// 4. then finally make the UI response object
+
+		String userId = "user_007_1"; // later we will fetch it from the session
+
+		// implementing step 1
+		List<String> list = getAllAccessTokenByUserId(userId);
+		// step 1 implementation complete
+		// step 2 implementation start
+		fetchAccountsRequest.setClientId(UrlConstants.CLIENT_ID);
+		fetchAccountsRequest.setSecret(UrlConstants.SECRET);
+		List<FetchCreatedItemAccountsResponse> listOfFetchedAccounts = new ArrayList<>();
+		FetchCreatedItemAccountsResponse fetchedAccountsForItem = new FetchCreatedItemAccountsResponse();
+		for (String accessToken : list) {
+			fetchAccountsRequest.setAccessToken(accessToken);
+			// fetchedAccountsForItem = getAccountsForCreatedItem(fetchAccountsRequest);		// to be implemented
+			listOfFetchedAccounts.add(fetchedAccountsForItem);
+		}
+		// step 2 implementation ends
+		// step 3 implementation starts
+		Map<String, AccountWiseSummary> finalMap = new HashMap<>();
+		for (FetchCreatedItemAccountsResponse fetchedAccountsPerItem : listOfFetchedAccounts) {
+			for (int i = 0; i < fetchedAccountsPerItem.getAccounts().size(); i++) {
+				FetchCreatedItemAccountsResponse.Account account = fetchedAccountsPerItem.getAccounts().get(i);
+				String accountType = account.getType();
+				if (finalMap.containsKey(accountType)) {
+					AccountWiseSummary accountWiseSummary = finalMap.get(accountType);
+					List accounts = Arrays.asList(account);
+					accountWiseSummary.getAccounts().addAll(accounts);
+				} else {
+					AccountWiseSummary accountWiseSummary = new AccountWiseSummary();
+					List accounts = Arrays.asList(account);
+					accountWiseSummary.setAccounts(accounts);
+					finalMap.put(accountType, accountWiseSummary);
+				}
+			}
+		}
+		// step 3 implementation ends
+		// step 4 implementation starts
+		AccountsSummaryResponse accountsSummaryResponse = new AccountsSummaryResponse();
+		Set<String> keys = finalMap.keySet();
+		for (String key : keys) {
+			accountsSummaryResponse.getAccountTypes().addAll(Arrays.asList(finalMap.get(key)));
+		}
+		// step 4 implementation ends
+		// this will basically show the list of summary of accounts seggregated based on the account type
+		return accountsSummaryResponse;
 	}
 
 	// To send out requests to plaid for a single access token fetched from db.
