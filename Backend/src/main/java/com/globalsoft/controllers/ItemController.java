@@ -115,9 +115,9 @@ public class ItemController {
 	}
 
 	@PostMapping("/accessAllAccountsSummary")
-	public AccountsSummaryResponse accessAllAccountsSummary( @RequestBody() FetchCreatedItemAccountsSummaryRequest fetchAccountsRequest) {
+	public AccountsSummaryResponse accessAllAccountsSummary() {	//  @RequestBody() FetchCreatedItemAccountsSummaryRequest fetchAccountsRequest
 		LOGGER.log(Level.INFO, "request received in /accessAllAccountsSummary");
-		AccountsSummaryResponse listOfFetchedAccounts = itemService.fetchAllAccountsSummaryForUser(fetchAccountsRequest);
+		AccountsSummaryResponse listOfFetchedAccounts = itemService.fetchAllAccountsSummaryForUser();
 		LOGGER.log(Level.INFO, "returning response from /accessAllAccountsSummary");
 		return listOfFetchedAccounts;
 	}

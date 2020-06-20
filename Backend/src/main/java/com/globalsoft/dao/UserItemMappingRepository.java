@@ -15,8 +15,8 @@ public interface UserItemMappingRepository extends JpaRepository<UserItemMapping
 	List<UserItemMapping> findByUserItemCompositeId(UserItemCompositeId userItemCompositeId);
 //	List<UserItemMapping> findByItemId(UserItemCompositeId. itemId);
 //	List<UserItemMapping> findEmployeeByUserId( userId);
-	@Query( value="select * from user_item_mapping where user_id = :id and access_token_active_status = :activeStatus", nativeQuery = true)
-	List<UserItemMapping> findByUserId(@Param("id") String userId, @Param("activeStatus") String activeStatus);
+	@Query( value="select * from user_item_mapping where user_id = :userId and access_token_active_status = :activeStatus", nativeQuery = true)
+	List<UserItemMapping> findByUserId(@Param("userId") String userId, @Param("activeStatus") String activeStatus);
 	
 	List<UserItemMapping> findByUserItemCompositeIdUserId(String userId);
 }
