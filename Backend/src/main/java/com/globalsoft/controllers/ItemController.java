@@ -8,48 +8,63 @@ import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.globalsoft.constants.GenericConstants;
 import com.globalsoft.constants.UrlConstants;
 import com.globalsoft.dao.UserItemMappingRepository;
-import com.globalsoft.dao.UserRepository;
-import com.globalsoft.dto.models.Item;
-import com.globalsoft.dto.models.User;
+import com.globalsoft.dto.models.UserItemCompositeId;
 import com.globalsoft.dto.models.UserItemMapping;
+import com.globalsoft.generic.models.FetchCreatedItemAccountsSummaryRequest;
+import com.globalsoft.generic.models.FetchCreatedItemRequest;
+import com.globalsoft.generic.models.FetchCreatedItemResponse;
 import com.globalsoft.generic.models.ItemCreationRequest;
-import com.globalsoft.generic.models.ItemRetrieveRequest;
+import com.globalsoft.generic.models.ItemCreationResponse;
 import com.globalsoft.services.HTTPClientService;
+import com.globalsoft.services.ItemService;
+import com.globalsoft.ui.models.AccountsSummaryResponse;
+import com.google.gson.Gson;
 
 @RestController
 public class ItemController {
 //	ObjectMapper mapper = new ObjectMapper();
 	@Autowired
-	private UserRepository userRepository;
-	@Autowired
 	private UserItemMappingRepository userItemMappingRepository;
 	@Autowired
-	HTTPClientService httpClientService;
+	private HTTPClientService httpClientService;
 	@Autowired
-	ItemCreationRequest itemCreationRequest1;
+	private ItemService itemService;
 
 	private static final Logger LOGGER = Logger.getLogger(ItemController.class.getName());
 
 	@GetMapping("/check")
-	public List<User> showMessage() {
-		List<User> users = userRepository.findAll();
-		System.out.println("List of users fetched: ");
-		for (User user : users) {
-			System.out.println("User: " + user.toString());
-		}
+	public List<UserItemMapping> showMessage() {
+//		List<User> users = userRepository.findAll();
+//		System.out.println("List of users fetched: ");
+//		for (User user : users) {
+//			System.out.println("User: " + user.toString());
+//		}
+
 		System.out.println("Backend up and running...");
-		return users;
+
+//		List<UserItemMapping> list = userItemMappingRepository.findByItemId("item_00005");
+//		List<UserItemMapping> list = userItemMappingRepository.findByUserItemCompositeId(new UserItemCompositeId("user_002", "item_00005"));
+//		List<UserItemMapping> list = userItemMappingRepository.findByUserItemCompositeId(new UserItemCompositeId("", "item_00005"));
+
+		Iterable<UserItemMapping> list = userItemMappingRepository.findByUserId("user_002", "ACTIVE");
+		List<UserItemMapping> list2 = userItemMappingRepository.findByUserItemCompositeIdUserId("user_002");
+
+		list.forEach(System.out::println);
+		System.out.println("\n\n=====================================\n\n");
+		list2.forEach(System.out::println);
+
+		return list2;
 	}
 
 	@PostMapping("/getAccessToken")
-	public void createItem(@RequestBody ItemCreationRequest itemCreationRequest) {
+	public String createItem(@RequestBody ItemCreationRequest itemCreationRequest) {
 		// here we write the code to handle the item creation
 		// we will get the public_token form frontend and use that to invoke the plaid
 		// api
@@ -65,26 +80,45 @@ public class ItemController {
 
 		try {
 			ResponseEntity<String> response = httpClientService.postRequest(url, requestString);
+			LOGGER.log(Level.INFO, "response.getBody() is: " + response.getBody());
+			Gson gson = new Gson();
+			LOGGER.log(Level.INFO, "printing the response caught here: " + response.getBody().toString());
+			ItemCreationResponse itemCreationResponse = new ItemCreationResponse();
+			itemCreationResponse = gson.fromJson(response.getBody(), ItemCreationResponse.class);
+			LOGGER.log(Level.INFO, "userItemMapping: " + itemCreationResponse.toString());
 			LOGGER.log(Level.INFO, "Response to be persisted: " + response);
-			
-//			 now persist this data in DB
-			UserItemMapping userItemMapping;
-//			userItemMapping = response;				// later enhance this logic for data extraction once issue resolved by plaid support
-			userItemMapping = new UserItemMapping();
-			userItemMappingRepository.save(userItemMapping);
+
+			if (response.getStatusCode().value() >= 200 && response.getStatusCode().value() <= 299) {
+				// now persist this data in DB
+				UserItemMapping userItemMapping = new UserItemMapping(
+						new UserItemCompositeId("user_007_1", itemCreationResponse.getItemId()), null, null, null);
+				userItemMapping.setAccessToken(itemCreationResponse.getAccessToken());
+				userItemMapping.setRequestId(itemCreationResponse.getRequestId());
+				userItemMapping.setAccessTokenActiveStatus(GenericConstants.tokenActiveStatus.get("active"));
+				userItemMappingRepository.save(userItemMapping);
+
+			} else {
+				return "Detailed error is: " + response;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
+		return "success";
 	}
 
-//	@PostMapping("/accessItem/{userId}")
-//	public Item accessItem(@PathVariable("userId") String userId) {
-//
-//		// based on user id, fetch the access token for all the items of this user
-//		// loop to send out requests to plaid for all the access tokens fetched from db
-//		String url = UrlConstants.BASE_URL + UrlConstants.GET_ITEM;
-//		ItemRetrieveRequest temRetrieveRequest = new ItemRetrieveRequest();
-//		return item;
-//	}
+	@PostMapping("/accessAllItems")
+	public List<FetchCreatedItemResponse> accessAllItems(@RequestBody() FetchCreatedItemRequest fetchItemRequest) {
+		LOGGER.log(Level.INFO, "request received in /accessAllItems");
+		List<FetchCreatedItemResponse> listOfFetchedItems = itemService.fetchAllItemsForUser(fetchItemRequest);
+		LOGGER.log(Level.INFO, "returning response from /accessAllItems");
+		return listOfFetchedItems;
+	}
+
+	@PostMapping("/accessAllAccountsSummary")
+	public AccountsSummaryResponse accessAllAccountsSummary() {	//  @RequestBody() FetchCreatedItemAccountsSummaryRequest fetchAccountsRequest
+		LOGGER.log(Level.INFO, "request received in /accessAllAccountsSummary");
+		AccountsSummaryResponse listOfFetchedAccounts = itemService.fetchAllAccountsSummaryForUser();
+		LOGGER.log(Level.INFO, "returning response from /accessAllAccountsSummary");
+		return listOfFetchedAccounts;
+	}
 }
