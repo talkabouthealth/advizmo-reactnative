@@ -1,1 +1,2 @@
-export const ADD_PLACE = 'ADD_PLACE'
+export const ADD_PLACE = 'ADD_PLACE';
+export const DASHBOARD_SCREEN_DATA='DASHBOARD_SCREEN_DATA'

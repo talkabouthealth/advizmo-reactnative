@@ -1,0 +1,84 @@
+{
+	"AccountTypes" : [
+		{
+			"name" : "Depository",
+			"summary" : {
+				"available": 100,
+				"current": 110,
+				"iso_currency_code": "CAD"
+			},
+			"accounts" : [
+    {
+      "account_id": "PnpkZlD1rDtQZ7oxk97kSd3xJxz1pwf7bgeLk",
+      "balances": {
+        "available": 100,
+        "current": 110,
+        "iso_currency_code": "CAD",
+        "limit": null,
+        "unofficial_currency_code": null
+      },
+      "mask": "0000",
+      "name": "Plaid Checking",
+      "official_name": "Plaid Gold Standard 0% Interest Checking",
+      "subtype": "checking",
+      "type": "depository"
+    },
+    {
+      "account_id": "eNVMxpWB6WFpQmr8gvmgi3woAoQP5aHLKpbvG",
+      "balances": {
+        "available": 200,
+        "current": 210,
+        "iso_currency_code": "CAD",
+        "limit": null,
+        "unofficial_currency_code": null
+      },
+      "mask": "1111",
+      "name": "Plaid Saving",
+      "official_name": "Plaid Silver Standard 0.1% Interest Saving",
+      "subtype": "savings",
+      "type": "depository"
+    },
+    {
+      "account_id": "jQVLmWn4pnCokXGzlpXlSEKkXkd6AbT1kD7K4",
+      "balances": {
+        "available": null,
+        "current": 1000,
+        "iso_currency_code": "CAD",
+        "limit": null,
+        "unofficial_currency_code": null
+      },
+      "mask": "2222",
+      "name": "Plaid CD",
+      "official_name": "Plaid Bronze Standard 0.2% Interest CD",
+      "subtype": "cd",
+      "type": "depository"
+    }
+ ]
+		},
+		{
+			"name" : "Credit",
+			"summary" : {
+				"available": 100,
+				"current": 110,
+				"iso_currency_code": "CAD"
+			},
+			"accounts" :[
+		 {
+			 "account_id": "QbopGqDLzDCmZp7aM9pMhoeywyR1xnSpLvgPn",
+      "balances": {
+        "available": null,
+        "current": 410,
+        "iso_currency_code": "CAD",
+        "limit": 2000,
+        "unofficial_currency_code": null
+      },
+      "mask": "3333",
+      "name": "Plaid Credit Card",
+      "official_name": "Plaid Diamond 12.5% APR Interest Credit Card",
+      "subtype": "credit card",
+      "type": "credit"
+     }
+		]
+		}
+	]
+}

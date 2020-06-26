@@ -6,82 +6,61 @@ import { connect } from 'react-redux';
 import * as action from '../redux/actions/index';
 
 class DashboardComponent extends Component {
-   
+
     constructor() {
         super();
         this.state = {
-
+            dashboardData: []
         }
     }
-    componentDidMount(){
-       // this.props.add("MEhak")
-      
+    componentDidMount() {
+        this.props.fetchDashboardData()
     }
+    static getDerivedStateFromProps = (nextProps, prevState) => {
+        if (nextProps.dashboardDataProp !== prevState.dashboardData)
+            return {
+                dashboardData: nextProps.dashboardDataProp
+            }
+    }
+    accountDetails =(data,type) =>{
+        return (data !== undefined  && data !== null )? data.map( element => {
+            return (
+                <CardItem style={styles.cardItemSyle} >
+                    <View style={styles.paddingView}>
+                        <Image source={require('../../assets/dollar-icon.jpg')} style={styles.imageContent} />
+                    </View>
+                    <View style={styles.paddingView}><Text style={styles.cardItemText}>{element.name}</Text></View>
+                    <View style={styles.paddingView}><Text style={type=== 'Credit' ? styles.cardItemAmount_RedColor:styles.cardItemAmount}>{element.balances.available === null ||  element.balances.available === ''? 'NA' : element.balances.available}</Text></View>
+                </CardItem>
+            );
+        }) 
+        :
+         null
+    } 
+    account_Types = () => {
+        return (this.state.dashboardData !== undefined  && this.state.dashboardData !== null )? this.state.dashboardData.AccountTypes.map( element => {
+            return (
+                <Card><CardItem header>
+                <Left><Text style={styles.subHeading}>{element.name} </Text>
+                  <Text style={element.name=== 'Credit'? styles.cardItemHeading_RedColor:styles.cardItemHeadings}>{element.summary.available}</Text>
+                </Left>
+                    <Body></Body>
+                    <Right>
+                        <Icon name="angle-right" style={{ fontSize: 20, color: '#007bff' }} type="FontAwesome" />
+                    </Right>
+                </CardItem>
+                {this.accountDetails(element.accounts,element.name)}
+                </Card>
+            );
+        })
+            : null
+    };
     render() {
+
         return (
 
             <ScrollView>
-                {/* Content Section */}
-                <Card>
-                    <CardItem header>
-                        <Left>
-                            <Text style={styles.subHeading}>Accounts</Text>
-                        </Left>
-                        <Body></Body>
-                        <Right>
-                            <Icon name="angle-right" style={{ fontSize: 20, color: '#007bff' }} type="FontAwesome" />
-                        </Right>
-                    </CardItem>
-
-                    <CardItem style={styles.cardItemSyle}>
-                        <View style={styles.paddingView}>
-                            <Image source={require('../../assets/dollar-icon.jpg')} style={styles.imageContent} />
-                        </View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemText}>Net Worth</Text></View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemAmount}>$1780.74</Text></View>
-                    </CardItem>
-
-                    <CardItem style={styles.cardItemSyle}>
-                        <View style={styles.paddingView}>
-                            <Image source={require('../../assets/saving-icon.jpg')} style={styles.imageContent} />
-                        </View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemText}>Checking</Text></View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemAmount}>$1780.74</Text></View>
-                    </CardItem>
-
-
-                    <CardItem style={styles.cardItemSyle}>
-                        <View style={styles.paddingView}>
-                            <Image source={require('../../assets/saving-icon.jpg')} style={styles.imageContent} />
-                        </View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemText}>Savings</Text></View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemAmount}>$1780.74</Text></View>
-                    </CardItem>
-
-                    <CardItem style={styles.cardItemSyle}>
-                        <View style={styles.paddingView}>
-                            <Image source={require('../../assets/credit-icon.jpg')} style={styles.imageContent} />
-                        </View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemText}>Credit Card</Text></View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemCreditCard}>$1780.74</Text></View>
-                    </CardItem>
-
-                    <CardItem style={styles.cardItemSyle}>
-                        <View style={styles.paddingView}>
-                            <Image source={require('../../assets/graph-icon.jpg')} style={styles.imageContent} />
-                        </View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemText}>Investment</Text></View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemAmount}>$1780.74</Text></View>
-                    </CardItem>
-                    <CardItem style={styles.cardItemSyle}>
-                        <View style={styles.paddingView}>
-                            <Image source={require('../../assets/graph-icon.jpg')} style={styles.imageContent} />
-                        </View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemText}>Loan</Text></View>
-                        <View style={styles.paddingView}><Text style={styles.cardItemCreditCard}>$1780.74</Text></View>
-                    </CardItem>
-                </Card>
-
+              {this.account_Types()}
                 <Card>
                     <CardItem header>
                         <Left>
@@ -189,7 +168,7 @@ class DashboardComponent extends Component {
                     </CardItem>
                 </Card>
                 <Card>
-                <TouchableHighlight style={styles.button}>
+                    <TouchableHighlight style={styles.button}>
                         <CardItem style={{ justifyContent: "center" }} >
                             <Button
                                 onPress={() => {
@@ -197,10 +176,11 @@ class DashboardComponent extends Component {
                                         this.props.navigation.navigate('PlaidScreen')
 
                                     }, 100);
-                                }} 
-                                style={{padding:10,backgroundColor:'#007bff', fontWeight: 'bold',
+                                }}
+                                style={{
+                                    padding: 10, backgroundColor: '#007bff', fontWeight: 'bold',
 
-                            }}>
+                                }}>
                                 <Text style={{ color: "#fff" }}>LINK YOUR BANK ACCOUNT</Text>
                             </Button>
                         </CardItem>
@@ -216,18 +196,18 @@ class DashboardComponent extends Component {
 
 const mapStateToProps = state => {
     return {
-      places: state.placeReducer.places
+       dashboardDataProp: state.placeReducer.dashboardScreenData
     }
-  }
-  
-  const mapDispatchToProps = dispatch => {
+}
+const mapDispatchToProps = dispatch => {
     return {
-      add: (name) => {
-        dispatch(action.getAccessToken("dsd"))
-      }
+         fetchDashboardData: () => {
+            dispatch(action.fetchDashboardData("dsd"))
+
+        }
     }
-  }
-  
-  export default connect(mapStateToProps, mapDispatchToProps)(DashboardComponent)
-  
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashboardComponent)
+
 

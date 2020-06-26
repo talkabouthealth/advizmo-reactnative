@@ -9,13 +9,16 @@ import AccountCreateComponent from '../accountCreateComponent/accountCreateCompo
 import StartUpComponent from '../startupScreenComponent/startUpScreenComponent';
 import PhoneAuthenticationComponent from '../phoneAuthenticationComponent/phoneAuthenticationComponent';
 import HowItWorksComponent from '../howItWorksComponent/howItWorksComponent';
+import OptionComponent from '../optionComponent/optionComponent';
 const StackNavigator = createStackNavigator({
   StartUpScreen:{screen :StartUpComponent},
   SignUpScreen:{screen:AccountCreateComponent},
   OtpScreen:{screen:PhoneAuthenticationComponent},
     DashboardScreen: { screen: DashboardComponent },
     PlaidScreen : {screen:PlaidComponent},
-    howItWorksScreen:{screen:HowItWorksComponent}
+    howItWorksScreen:{screen:HowItWorksComponent},
+    OptionScreen:{screen:OptionComponent},
+
    },
     {
         defaultNavigationOptions: {

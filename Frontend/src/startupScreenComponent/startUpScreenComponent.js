@@ -19,7 +19,6 @@ class StartUpComponent extends Component {
         }
     }
     componentDidMount() {
-
     }
     render() {
         return (
@@ -49,7 +48,13 @@ class StartUpComponent extends Component {
                         </Button>
                       </View>
                 </TouchableHighlight>
-                <TouchableHighlight>
+                <TouchableHighlight 
+                underlayColor={'#808080'}
+                onPress={()=>{
+                      setTimeout(() => {
+                        this.props.navigation.navigate('OptionScreen')
+                    }, 100);
+                }}>
                     <View style={styles.buttonViewStyle}>
                           <Text style={styles.buttonTextStyle2}>I have an account</Text>
                      </View>

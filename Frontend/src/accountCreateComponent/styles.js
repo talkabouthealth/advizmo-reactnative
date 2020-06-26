@@ -43,7 +43,9 @@ export const styles = StyleSheet.create({
     buttonViewStyle: {
         justifyContent: "center",
         alignItems: "center",
-        padding: 6
+        padding: 6,
+        backgroundColor: '#696969',
+
     },
     buttonTextStyle: { color: "#fff" },
     buttonTextStyle2:{ color: "#0000CD" }

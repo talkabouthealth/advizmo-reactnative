@@ -30,6 +30,10 @@ export const styles = StyleSheet.create({
     imageContent: { resizeMode: "contain", height: 25, width: 25 },
     cardItemText: { color:"#3a3b3e",fontWeight: "700", fontSize: 13 },
     cardItemAmount: { fontWeight: "700", fontSize: 13, color: "#2ca01c" },
+    cardItemHeadings: { fontWeight: "700", fontSize: 18, color: "#2ca01c" },
+    cardItemAmount_RedColor:{ fontWeight: "700", fontSize: 13, color: "red" },
+    cardItemHeading_RedColor:{ fontWeight: "700", fontSize: 18, color: "red" },
+
     paddingView: { padding: 2 },
     cardItemCreditCard:{fontWeight: "700", fontSize: 13, color: "#000" },
     upcomingBillsCardItem:{

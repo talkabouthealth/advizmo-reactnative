@@ -43,6 +43,7 @@ buttonStyle2:{
 
     buttonTextStyle2:{ color: "#0000CD" },
     buttonViewStyle:{
+
       justifyContent: "center", 
       alignItems: "center",
       padding:6
